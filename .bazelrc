@@ -1,0 +1,15 @@
+# Configurações básicas do Bazel
+build --cxxopt=-std=c++17
+build --host_cxxopt=-std=c++17
+
+# Configurações de compilação
+build --compilation_mode=opt
+build --strip=never
+
+# Configurações para debugging
+build:debug --compilation_mode=dbg
+build:debug --strip=never
+
+# Configurações para release
+build:release --compilation_mode=opt
+build:release --strip=always

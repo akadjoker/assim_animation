@@ -1,0 +1,99 @@
+load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library")
+
+# Configurações para Debug/Release
+config_setting(
+    name = "debug_mode",
+    values = {"compilation_mode": "dbg"},
+)
+
+config_setting(
+    name = "release_mode",
+    values = {"compilation_mode": "opt"},
+)
+
+# Biblioteca com headers + PCH
+cc_library(
+    name = "pch",
+    hdrs = glob([
+        "include/**/*.h",
+        "include/**/*.hpp",
+        "src/**/*.h",
+    ]),
+    copts = ["-include", "include/pch.h"],
+    includes = ["include", "src"],
+    visibility = ["//visibility:public"],
+)
+
+# Executável principal
+cc_binary(
+    name = "main",
+    srcs = glob(["src/*.cpp"]),
+     data = glob(["assets/**"]),
+    deps = [":pch"],
+    copts = [
+        "-std=c++11",
+        "-fexceptions",
+        "-frtti",
+        "-fno-strict-aliasing",
+        "-DUSE_GRAPHICS",
+        "-Wextra",
+        "-Wall",
+        "-O2",
+        "-Wno-missing-field-initializers",
+        "-Wundef",
+        "-Wuninitialized",
+        "-Wunused",
+        "-Wno-unused-parameter",
+        "-Wwrite-strings",
+        "-Wchar-subscripts",
+        "-funsigned-char",
+    ] + select({
+        ":debug_mode": [
+            "-fsanitize=address",
+            "-fsanitize=undefined",
+            "-fsanitize=leak",
+            "-g",
+            "-D_DEBUG",
+        ],
+        ":release_mode": [
+            "-O3",
+            "-DNDEBUG",
+        ],
+        "//conditions:default": [],
+    }),
+    linkopts = select({
+        "@bazel_tools//src/conditions:windows": [
+            "-lWinmm",
+        ],
+        "@bazel_tools//src/conditions:linux_x86_64": [
+            "-L/usr/local/lib",  # Caminho para bibliotecas
+            "-lassimp",
+            "-lraylib",
+            "-lm",
+            "-ldl",
+        ],
+        "//conditions:default": [],
+    }) + select({
+        ":debug_mode": [
+            "-fsanitize=address",
+            "-fsanitize=undefined",
+            "-fsanitize=leak",
+            "-g",
+        ],
+        ":release_mode": [
+            "-O3",
+            "-DNDEBUG",
+        ],
+        "//conditions:default": [],
+    }),
+    visibility = ["//visibility:public"],
+)
+
+# Regra para copiar o binário para <project_root>/bin
+genrule(
+    name = "copy_main_to_bin",
+    srcs = [":main"],
+    outs = ["bin/main"],
+    cmd = "mkdir -p $$(dirname $@) && cp $< $@",
+    visibility = ["//visibility:public"],
+)

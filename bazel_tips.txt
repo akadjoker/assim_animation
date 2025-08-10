@@ -1,0 +1,2 @@
+bazel clean --expunge
+bazel build //:copy_main_to_bin --compilation_mode=dbg --verbose_failures

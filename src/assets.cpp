@@ -1,4 +1,4 @@
-
+#include "pch.h"
 #include "assets.hpp"
 
 AssetManager* AssetManager::instance = nullptr;

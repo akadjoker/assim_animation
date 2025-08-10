@@ -5,7 +5,7 @@
 #include "entity.hpp"
 #include "assets.hpp"
 
- 
+   
  
 
 
@@ -17,7 +17,7 @@ int main()
     SetTraceLogLevel(LOG_WARNING);
     InitWindow(1280, 720, "Assimp Animated Models By Luis Santos AKA DJOKER");
     SetTargetFPS(60);
- 
+    ChangeDirectory("assets");
    
   
 

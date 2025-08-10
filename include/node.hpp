@@ -1,6 +1,7 @@
 #pragma once
 #include "Config.hpp"
 
+
 class LoadMD3;
 
 class Entity;

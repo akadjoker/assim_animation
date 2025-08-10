@@ -1,0 +1,13 @@
+"""Módulo principal do projeto C++ com suporte a Debug/Release e PCH.
+
+Este módulo define a configuração base e as dependências necessárias
+para compilar o binário principal usando Bazel 8+ e Bzlmod.
+"""
+
+module(
+    name = "animation",
+    version = "1.0",
+)
+
+bazel_dep(name = "rules_cc", version = "0.1.1")
+
